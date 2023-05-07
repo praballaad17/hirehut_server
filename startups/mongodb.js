@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
-const mongoURI = process.env.MONGOURI;
-// const mongoURI = "mongodb://localhost:27017/bookkeeping";
+// const mongoURI = process.env.MONGOURI;
+const mongoURI = "mongodb://localhost:27017/hirehut";
 function mongofunction(app) {
   (async function () {
     try {
