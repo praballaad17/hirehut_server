@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const fs = require("fs");
-const multer = require("multer");
 const Profile = require("../models/profile");
 
 module.exports.getUser = async (req, res) => {
@@ -17,10 +16,6 @@ module.exports.getUser = async (req, res) => {
     return res.status(400).send(error);
   }
 };
-
-const upload = multer({
-  dest: "./images",
-});
 
 module.exports.updateProfile = async (req, res) => {
   const profileUrl = `${process.env.DOMAINURL}/api/profile/${req.file.filename}`;
