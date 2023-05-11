@@ -37,10 +37,14 @@ module.exports.loginAuthentication = async (req, res, next) => {
           _id: user._id,
           email: user.email,
           username: user.username,
-          avatar: user.avatar,
+          isEmployeer: user.isEmployeer,
         },
         token: jwt.encode(
-          { id: user._id, username: user.username },
+          {
+            id: user._id,
+            username: user.username,
+            isEmployeer: user.isEmployeer,
+          },
           process.env.JWT_SECRET
         ),
       });
@@ -51,11 +55,11 @@ module.exports.loginAuthentication = async (req, res, next) => {
 };
 
 module.exports.register = async (req, res, next) => {
-  const { username, fullName, email, password } = req.body;
+  const { email, password, isEmployeer } = req.body;
   let user = null;
 
   try {
-    user = new User({ username, fullName, email, password });
+    user = new User({ email, password, isEmployeer });
 
     await user.save();
     res.status(201).send({
@@ -64,7 +68,7 @@ module.exports.register = async (req, res, next) => {
         username: user.username,
       },
       token: jwt.encode(
-        { id: user._id, username: user.username },
+        { id: user._id, username: user.username, isEmployeer },
         process.env.JWT_SECRET
       ),
     });

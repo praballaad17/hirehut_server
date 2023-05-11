@@ -26,27 +26,33 @@ module.exports.updateProfile = async (req, res) => {
   const profileUrl = `${process.env.DOMAINURL}/api/profile/${req.file.filename}`;
   const profile = await Profile.findOne({ userId: req.params.userId });
 
-  if (profile) {
-    await Profile.findOneAndUpdate(
-      { userId: req.params.userId },
-      {
-        $set: {
-          profileUrl,
-        },
-      }
-    );
-  } else {
-    const newprofile = new Profile({
-      userId: req.params.userId,
-      profileUrl,
-    });
-    await newprofile.save();
-  }
+  // console.log(req.file);
+  // const profileRef = ref(storage, req.file.filename);
+  // uploadBytes(profileRef, file).then((snapshot) => {
+  //   console.log("Uploaded a blob or file!");
+  // });
 
-  res.json({
-    success: 1,
-    profileUrl,
-  });
+  // if (profile) {
+  //   await Profile.findOneAndUpdate(
+  //     { userId: req.params.userId },
+  //     {
+  //       $set: {
+  //         profileUrl,
+  //       },
+  //     }
+  //   );
+  // } else {
+  //   const newprofile = new Profile({
+  //     userId: req.params.userId,
+  //     profileUrl,
+  //   });
+  //   await newprofile.save();
+  // }
+
+  // res.json({
+  //   success: 1,
+  //   profileUrl,
+  // });
 };
 
 module.exports.getProfile = async (req, res) => {
