@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const fs = require("fs");
-const Profile = require("../models/profile");
+const JobseekerProfile = require("../models/jobseekerProfile");
 
 module.exports.getUser = async (req, res) => {
   const { userId } = req.params;
@@ -19,7 +19,7 @@ module.exports.getUser = async (req, res) => {
 
 module.exports.updateProfile = async (req, res) => {
   const profileUrl = `${process.env.DOMAINURL}/api/profile/${req.file.filename}`;
-  const profile = await Profile.findOne({ userId: req.params.userId });
+  const profile = await JobseekerProfile.findOne({ userId: req.params.userId });
 
   // console.log(req.file);
   // const profileRef = ref(storage, req.file.filename);
@@ -28,7 +28,7 @@ module.exports.updateProfile = async (req, res) => {
   // });
 
   // if (profile) {
-  //   await Profile.findOneAndUpdate(
+  //   await JobseekerProfile.findOneAndUpdate(
   //     { userId: req.params.userId },
   //     {
   //       $set: {
@@ -37,7 +37,7 @@ module.exports.updateProfile = async (req, res) => {
   //     }
   //   );
   // } else {
-  //   const newprofile = new Profile({
+  //   const newprofile = new JobseekerProfile({
   //     userId: req.params.userId,
   //     profileUrl,
   //   });
@@ -52,7 +52,9 @@ module.exports.updateProfile = async (req, res) => {
 
 module.exports.getProfile = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ userId: req.params.userId });
+    const profile = await JobseekerProfile.findOne({
+      userId: req.params.userId,
+    });
 
     res.status(200).send(profile);
   } catch (error) {

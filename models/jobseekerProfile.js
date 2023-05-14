@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
 
-const ProfileSchema = new Schema({
+const JobseekerProfileSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -11,5 +11,8 @@ const ProfileSchema = new Schema({
   profileUrl: String,
 });
 
-const Profile = mongoose.model("Profile", ProfileSchema);
-module.exports = Profile;
+const JobseekerProfile = mongoose.model(
+  "JobseekerProfile",
+  JobseekerProfileSchema
+);
+module.exports = JobseekerProfile;
