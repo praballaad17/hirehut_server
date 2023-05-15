@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const fs = require("fs");
 const JobseekerProfile = require("../models/jobseekerProfile");
+const { EmployeerProfile } = require("../models/EmployeerProfile");
 
 module.exports.getUser = async (req, res) => {
   const { userId } = req.params;
@@ -18,8 +19,11 @@ module.exports.getUser = async (req, res) => {
 };
 
 module.exports.updateProfile = async (req, res) => {
-  const profileUrl = `${process.env.DOMAINURL}/api/profile/${req.file.filename}`;
-  const profile = await JobseekerProfile.findOne({ userId: req.params.userId });
+  const { name, role, website, location, employeecount, description, pitch } =
+    req.body;
+
+  // const profileUrl = `${process.env.DOMAINURL}/api/profile/${req.file.filename}`;
+  // const profile = await JobseekerProfile.findOne({ userId: req.params.userId });
 
   // console.log(req.file);
   // const profileRef = ref(storage, req.file.filename);
@@ -28,14 +32,21 @@ module.exports.updateProfile = async (req, res) => {
   // });
 
   // if (profile) {
-  //   await JobseekerProfile.findOneAndUpdate(
-  //     { userId: req.params.userId },
-  //     {
-  //       $set: {
-  //         profileUrl,
-  //       },
-  //     }
-  //   );
+  const updatedprofile = await EmployeerProfile.findOneAndUpdate(
+    { userId: req.params.userId },
+    {
+      $set: {
+        name,
+        role,
+        website,
+        location,
+        employeecount,
+        description,
+        pitch,
+      },
+    }
+  );
+  console.log(updatedprofile);
   // } else {
   //   const newprofile = new JobseekerProfile({
   //     userId: req.params.userId,
@@ -44,17 +55,24 @@ module.exports.updateProfile = async (req, res) => {
   //   await newprofile.save();
   // }
 
-  // res.json({
-  //   success: 1,
-  //   profileUrl,
-  // });
+  res.json({
+    success: 1,
+    updatedprofile,
+  });
 };
 
 module.exports.getProfile = async (req, res) => {
+  let profile;
   try {
-    const profile = await JobseekerProfile.findOne({
-      userId: req.params.userId,
-    });
+    if (req.params.isEmployeer) {
+      profile = await EmployeerProfile.findOne({
+        userId: req.params.userId,
+      });
+    } else {
+      profile = await JobseekerProfile.findOne({
+        userId: req.params.userId,
+      });
+    }
 
     res.status(200).send(profile);
   } catch (error) {

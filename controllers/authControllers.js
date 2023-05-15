@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jwt-simple");
+const { EmployeerProfile } = require("../models/EmployeerProfile");
+const JobseekerProfile = require("../models/jobseekerProfile");
 
 module.exports.loginAuthentication = async (req, res, next) => {
   const { usernameOrEmail, password } = req.body;
@@ -22,7 +24,7 @@ module.exports.loginAuthentication = async (req, res, next) => {
       });
     }
 
-    bcrypt.compare(password, user.password, (err, result) => {
+    bcrypt.compare(password, user.password, async (err, result) => {
       if (err) {
         return next(err);
       }
@@ -32,18 +34,26 @@ module.exports.loginAuthentication = async (req, res, next) => {
         });
       }
 
+      let profile;
+
+      if (user.isEmployeer) {
+        profile = await EmployeerProfile.findOne({ userId: user._id });
+      } else {
+        profile = await JobseekerProfile.findOne({ userId: user._id });
+      }
+
       res.send({
         user: {
           _id: user._id,
           email: user.email,
-          username: user.username,
           isEmployeer: user.isEmployeer,
+          profileId: profile._id,
         },
         token: jwt.encode(
           {
             id: user._id,
-            username: user.username,
             isEmployeer: user.isEmployeer,
+            profileId: profile._id,
           },
           process.env.JWT_SECRET
         ),
@@ -56,19 +66,32 @@ module.exports.loginAuthentication = async (req, res, next) => {
 
 module.exports.register = async (req, res, next) => {
   const { email, password, isEmployeer } = req.body;
-  let user = null;
 
   try {
-    user = new User({ email, password, isEmployeer });
-
-    await user.save();
+    let user = new User({ email, password, isEmployeer });
+    if (isEmployeer) {
+      const newprofile = new EmployeerProfile({
+        userId: user._id,
+      });
+      await newprofile.save();
+    } else {
+      const newprofile = new JobseekerProfile({
+        userId: user._id,
+      });
+      await newprofile.save();
+    }
+    try {
+      await user.save();
+    } catch (error) {
+      console.log(error);
+    }
     res.status(201).send({
       user: {
         email: user.email,
-        username: user.username,
+        profileId: newprofile._id,
       },
       token: jwt.encode(
-        { id: user._id, username: user.username, isEmployeer },
+        { id: user._id, isEmployeer, profileId: newprofile._id },
         process.env.JWT_SECRET
       ),
     });

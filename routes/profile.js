@@ -16,8 +16,10 @@ const { updateProfile, getProfile } = require("../controllers/userControllers");
 //   storage: storage,
 // });
 
+const upload = multer();
+
 router.use("/", express.static("images"));
 
-router.post("/update-profile/:userId", updateProfile);
-router.get("/get-user-profile/:userId", getProfile);
+router.post("/update-profile/:userId", upload.none(), updateProfile);
+router.get("/get-user-profile/:userId/:isEmployeer", getProfile);
 module.exports = router;

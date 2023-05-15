@@ -8,3 +8,8 @@ module.exports.generateID = () => {
   }
   return result;
 };
+
+module.exports.validateEmail = (email) => {
+  const emailReg = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+  return emailReg.test(email);
+};

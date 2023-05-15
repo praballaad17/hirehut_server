@@ -22,6 +22,13 @@ const EmployeerProfileSchema = new Schema({
     type: [Schema.Types.ObjectId],
     ref: "Branch",
   },
+  name: String,
+  role: String,
+  website: String,
+  location: String,
+  employeecount: String,
+  description: String,
+  pitch: String,
 });
 
 const EmployeerProfile = mongoose.model(

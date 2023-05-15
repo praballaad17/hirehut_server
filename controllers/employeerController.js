@@ -23,6 +23,17 @@ module.exports.getAllBranch = async (req, res) => {
   }
 };
 
+// delete branch
+module.exports.deleteBranch = async (req, res) => {
+  try {
+    const branch = await Branch.deleteOne({ _id: req.params.id });
+    res.send(branch);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
 module.exports.addJob = async (req, res) => {
   console.log(req.body);
   try {
@@ -41,7 +52,6 @@ module.exports.getAllJobs = async (req, res) => {
     const jobs = await Job.find({ userId: req.params.userId }).populate(
       "location"
     );
-    console.log(jobs);
     res.send(jobs);
   } catch (error) {
     console.log(error);

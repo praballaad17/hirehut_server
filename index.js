@@ -6,6 +6,7 @@ require("dotenv").config();
 const auth = require("./routes/auth");
 const profile = require("./routes/profile");
 const employeer = require("./routes/employeer");
+const jobseeker = require("./routes/jobseeker");
 
 const app = express();
 require("./startups/cors")(app);
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", auth);
 app.use("/api/profile", profile);
 app.use("/api/employeer", employeer);
+app.use("/api/jobseeker", jobseeker);
 
 const port = process.env.PORT || 3003;
 server.listen(port, () => console.log(`Listening on port ${port}...`));

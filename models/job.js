@@ -7,11 +7,16 @@ const JobSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  profileId: {
+    type: Schema.Types.ObjectId,
+    ref: "EmployeerProfile",
+  },
   title: String,
   location: {
     type: Schema.Types.ObjectId,
     ref: "Branch",
   },
+  status: String,
   profileUrl: String,
   jobType: [],
   shift: [],
