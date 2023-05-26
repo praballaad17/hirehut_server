@@ -11,8 +11,38 @@ const JobseekerProfileSchema = new Schema({
   profileUrl: String,
 });
 
+const JobJobseekerApplySchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
+  jobId: {
+    type: Schema.Types.ObjectId,
+    ref: "Job",
+  },
+  status: String,
+});
+
+const SavedJobsSchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
+  jobId: {
+    type: Schema.Types.ObjectId,
+    ref: "Job",
+  },
+});
+
 const JobseekerProfile = mongoose.model(
   "JobseekerProfile",
   JobseekerProfileSchema
 );
-module.exports = JobseekerProfile;
+
+const SavedJobs = mongoose.model("SavedJobs", SavedJobsSchema);
+
+const JobJobseekerApply = mongoose.model(
+  "JobJobseekerApply",
+  JobJobseekerApplySchema
+);
+module.exports = { JobseekerProfile, JobJobseekerApply, SavedJobs };

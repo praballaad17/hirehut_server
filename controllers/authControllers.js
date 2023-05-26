@@ -2,7 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jwt-simple");
 const { EmployeerProfile } = require("../models/EmployeerProfile");
-const JobseekerProfile = require("../models/jobseekerProfile");
+const { JobseekerProfile } = require("../models/jobseekerProfile");
 
 module.exports.loginAuthentication = async (req, res, next) => {
   const { usernameOrEmail, password } = req.body;
