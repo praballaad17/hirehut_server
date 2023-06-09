@@ -15,6 +15,15 @@ const UserSchema = new Schema({
   isEmployeer: {
     type: Boolean,
   },
+  profileId: {
+    type: Schema.Types.ObjectId,
+    refPath: "profileModel",
+  },
+  profileModel: {
+    type: String,
+    required: true,
+    enum: ["JobseekerProfile", "EmployeerProfile"],
+  },
 });
 
 UserSchema.pre("save", function (next) {

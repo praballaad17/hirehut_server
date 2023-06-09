@@ -8,8 +8,13 @@ const {
   fetchSavedJobs,
   fetchAppliedJobs,
   fetchJobByJobId,
+  fetchJobseekerProfile,
+  postJobseekerProfile,
 } = require("../controllers/jobseerkerController");
 const router = express.Router();
+
+router.get("/fetch-profile/:userId", fetchJobseekerProfile);
+router.post("/edit-profile/:userId", postJobseekerProfile);
 
 router.get("/search-jobs", searchJobs);
 router.post("/apply-job", jobseekerJobApply);

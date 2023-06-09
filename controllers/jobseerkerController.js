@@ -1,13 +1,76 @@
 const { EmployeerProfile } = require("../models/EmployeerProfile");
 const Job = require("../models/job");
-const { JobJobseekerApply, SavedJobs } = require("../models/jobseekerProfile");
+const {
+  JobJobseekerApply,
+  SavedJobs,
+  JobseekerProfile,
+} = require("../models/jobseekerProfile");
+
+module.exports.fetchJobseekerProfile = async (req, res) => {
+  try {
+    const profile = await JobseekerProfile.findOne({
+      userId: req.params.userId,
+    });
+
+    res.send(profile);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+// edit jobseeker profile
+module.exports.postJobseekerProfile = async (req, res) => {
+  const { form } = req.body;
+  console.log(req.body);
+  try {
+    // const profile = new JobseekerProfile();
+    // await profile.save();
+    // res.status(201).send(profile);
+
+    const profile = await JobseekerProfile.findOneAndUpdate(
+      {
+        userId: req.params.userId,
+      },
+      {
+        ...form,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(202).send(profile);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
 
 module.exports.searchJobs = async (req, res) => {
-  console.log("job search", req.query);
-  try {
-    const jobs = await Job.find().populate("location").populate("profileId");
+  const { what, where } = req.query.query;
 
-    // console.log(jobs);
+  console.log(req.query);
+  try {
+    let query = {
+      $or: [],
+    };
+
+    if (what.trim() !== "") {
+      query.$or = [{ title: { $regex: what, $options: "i" } }];
+    } else if (where.trim() !== "") {
+      query.$or = [
+        ...query.$or,
+        { city: { $regex: where, $options: "i" } },
+        { state: { $regex: where, $options: "i" } },
+      ];
+    }
+
+    const jobs = await Job.find(query);
+    // .populate("location")
+    // .populate("profileId");
+
+    console.log(jobs);
     res.send(jobs);
   } catch (error) {
     console.log(error);

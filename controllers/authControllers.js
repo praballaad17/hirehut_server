@@ -69,29 +69,33 @@ module.exports.register = async (req, res, next) => {
 
   try {
     let user = new User({ email, password, isEmployeer });
+    let newProfile = {};
     if (isEmployeer) {
-      const newprofile = new EmployeerProfile({
+      newProfile = new EmployeerProfile({
         userId: user._id,
       });
-      await newprofile.save();
+      user.profileModel = "EmployeerProfile";
     } else {
-      const newprofile = new JobseekerProfile({
+      newProfile = new JobseekerProfile({
         userId: user._id,
       });
-      await newprofile.save();
+      user.profileModel = "JobseekerProfile";
     }
+
+    user.profileId = newProfile._id;
     try {
       await user.save();
+      await newProfile.save();
     } catch (error) {
       console.log(error);
     }
     res.status(201).send({
       user: {
         email: user.email,
-        profileId: newprofile._id,
+        profileId: newProfile._id,
       },
       token: jwt.encode(
-        { id: user._id, isEmployeer, profileId: newprofile._id },
+        { id: user._id, isEmployeer, profileId: newProfile._id },
         process.env.JWT_SECRET
       ),
     });

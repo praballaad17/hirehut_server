@@ -1,6 +1,9 @@
 const { Branch } = require("../models/EmployeerProfile");
 const Job = require("../models/job");
-const { JobJobseekerApply } = require("../models/jobseekerProfile");
+const {
+  JobJobseekerApply,
+  JobseekerProfile,
+} = require("../models/jobseekerProfile");
 
 module.exports.addBranch = async (req, res) => {
   try {
@@ -48,6 +51,9 @@ module.exports.deleteBranch = async (req, res) => {
 module.exports.addJob = async (req, res) => {
   console.log(req.body);
   try {
+    const branch = await Branch.findById(req.body.location);
+    req.body.state = branch.state;
+    req.body.city = branch.city;
     const job = new Job(req.body);
     await job.save();
     res.send(job);
@@ -128,11 +134,32 @@ module.exports.editJob = async (req, res) => {
   }
 };
 
+//fetch job candidates
 module.exports.getJobCandidates = async (req, res) => {
   try {
     const candidates = await JobJobseekerApply.find({
       jobId: req.params.jobId,
-    });
+    })
+      .populate("userId")
+      .populate({
+        path: "userId",
+        populate: { path: "profileId" },
+      });
+
+    // const resultArray = candidates.map(async (candidate) => {
+    //   const profile = await JobseekerProfile.findOne({
+    //     userId: candidate.userId,
+    //   });
+    //   console.log(profile);
+    //   if (profile) {
+    //     candidate.profile = profile;
+    //     return profile;
+    //   }
+    // });
+
+    // const profiles = await Promise.all(resultArray);
+
+    console.log(candidates);
     res.send(candidates);
   } catch (error) {
     console.log(error);

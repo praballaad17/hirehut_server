@@ -16,6 +16,8 @@ const JobSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Branch",
   },
+  city: String,
+  state: String,
   status: String,
   profileUrl: String,
   jobType: [],
