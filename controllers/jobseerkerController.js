@@ -50,7 +50,6 @@ module.exports.postJobseekerProfile = async (req, res) => {
 module.exports.searchJobs = async (req, res) => {
   const { what, where } = req.query.query;
 
-  console.log(req.query);
   try {
     let query = {
       $or: [],
@@ -58,7 +57,9 @@ module.exports.searchJobs = async (req, res) => {
 
     if (what.trim() !== "") {
       query.$or = [{ title: { $regex: what, $options: "i" } }];
-    } else if (where.trim() !== "") {
+    } else if (where.trim() === "all") {
+      query.$or = [{ city: { $regex: "", $options: "i" } }];
+    } else if (where.trim() !== "" || where.trim() !== "all") {
       query.$or = [
         ...query.$or,
         { city: { $regex: where, $options: "i" } },
@@ -70,7 +71,6 @@ module.exports.searchJobs = async (req, res) => {
     // .populate("location")
     // .populate("profileId");
 
-    console.log(jobs);
     res.send(jobs);
   } catch (error) {
     console.log(error);
