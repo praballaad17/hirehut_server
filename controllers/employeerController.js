@@ -1,9 +1,10 @@
 const { Branch } = require("../models/EmployeerProfile");
 const Job = require("../models/job");
 const {
-  JobJobseekerApply,
+  JobApplication,
   JobseekerProfile,
 } = require("../models/jobseekerProfile");
+const { Conversation } = require("../models/message");
 
 module.exports.addBranch = async (req, res) => {
   try {
@@ -49,7 +50,6 @@ module.exports.deleteBranch = async (req, res) => {
 };
 
 module.exports.addJob = async (req, res) => {
-  console.log(req.body);
   try {
     const branch = await Branch.findById(req.body.location);
     req.body.state = branch.state;
@@ -137,7 +137,7 @@ module.exports.editJob = async (req, res) => {
 //fetch job candidates
 module.exports.getJobCandidates = async (req, res) => {
   try {
-    const candidates = await JobJobseekerApply.find({
+    const candidates = await JobApplication.find({
       jobId: req.params.jobId,
     })
       .populate("userId")
@@ -146,21 +146,49 @@ module.exports.getJobCandidates = async (req, res) => {
         populate: { path: "profileId" },
       });
 
-    // const resultArray = candidates.map(async (candidate) => {
-    //   const profile = await JobseekerProfile.findOne({
-    //     userId: candidate.userId,
-    //   });
-    //   console.log(profile);
-    //   if (profile) {
-    //     candidate.profile = profile;
-    //     return profile;
-    //   }
-    // });
-
-    // const profiles = await Promise.all(resultArray);
-
-    console.log(candidates);
     res.send(candidates);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+//accept job application
+module.exports.acceptJobApplication = async (req, res) => {
+  console.log(req.params.jobId, req.params.candidateId);
+  try {
+    const jobApplication = await JobApplication.findOneAndUpdate(
+      {
+        jobId: req.params.jobId,
+        userId: req.params.candidateId,
+      },
+      {
+        $set: {
+          status: "accepted",
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    let job = {};
+
+    try {
+      job = await Job.findOne({ _id: jobApplication.jobId }).select("userId");
+    } catch (error) {
+      console.log(error);
+    }
+
+    const converation = new Conversation({
+      jobseeker: jobApplication.userId,
+      employer: job.userId,
+      job: job._id,
+    });
+
+    await converation.save();
+
+    res.send("updated");
   } catch (error) {
     console.log(error);
     res.sendStatus(500);

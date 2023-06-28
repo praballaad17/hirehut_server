@@ -28,7 +28,7 @@ const JobseekerProfileSchema = new Schema({
   experiance: String,
 });
 
-const JobJobseekerApplySchema = new Schema({
+const JobApplicationSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
@@ -58,8 +58,5 @@ const JobseekerProfile = mongoose.model(
 
 const SavedJobs = mongoose.model("SavedJobs", SavedJobsSchema);
 
-const JobJobseekerApply = mongoose.model(
-  "JobJobseekerApply",
-  JobJobseekerApplySchema
-);
-module.exports = { JobseekerProfile, JobJobseekerApply, SavedJobs };
+const JobApplication = mongoose.model("JobApplication", JobApplicationSchema);
+module.exports = { JobseekerProfile, JobApplication, SavedJobs };

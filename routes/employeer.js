@@ -11,6 +11,7 @@ const {
   deleteBranch,
   fetchJobByJobId,
   getJobCandidates,
+  acceptJobApplication,
 } = require("../controllers/employeerController");
 
 router.post("/add-branch", addBranch);
@@ -19,6 +20,7 @@ router.put("/edit-job", editJob);
 
 router.get("/fetch-job/:jobId", fetchJobByJobId);
 router.get("/candidates/:jobId", getJobCandidates);
+router.put("/accept-candidates/:jobId/:candidateId", acceptJobApplication);
 
 router.delete("/delete-branch/:id", deleteBranch);
 router.delete("/delete-job/:id", deleteJob);

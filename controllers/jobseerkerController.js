@@ -1,7 +1,7 @@
 const { EmployeerProfile } = require("../models/EmployeerProfile");
 const Job = require("../models/job");
 const {
-  JobJobseekerApply,
+  JobApplication,
   SavedJobs,
   JobseekerProfile,
 } = require("../models/jobseekerProfile");
@@ -67,9 +67,9 @@ module.exports.searchJobs = async (req, res) => {
       ];
     }
 
-    const jobs = await Job.find(query);
-    // .populate("location")
-    // .populate("profileId");
+    const jobs = await Job.find(query)
+      // .populate("location")
+      .populate("profileId");
 
     res.send(jobs);
   } catch (error) {
@@ -81,7 +81,7 @@ module.exports.searchJobs = async (req, res) => {
 module.exports.jobseekerJobApply = async (req, res) => {
   const { userId, jobId, status } = req.body;
   try {
-    const relatetion = new JobJobseekerApply({
+    const relatetion = new JobApplication({
       userId,
       jobId,
       status,
@@ -128,7 +128,7 @@ module.exports.fetchSavedJobs = async (req, res) => {
 
 module.exports.fetchAppliedJobs = async (req, res) => {
   try {
-    const jobs = await JobJobseekerApply.find({ userId: req.params.userId })
+    const jobs = await JobApplication.find({ userId: req.params.userId })
       .populate("jobId")
       .populate({
         path: "jobId",
@@ -166,7 +166,7 @@ module.exports.deleteSavedJob = async (req, res) => {
 module.exports.checkApplyJob = async (req, res) => {
   const { userId, jobId } = req.body;
   try {
-    const relatetion = await JobJobseekerApply.findOne({
+    const relatetion = await JobApplication.findOne({
       userId,
       jobId,
     });
