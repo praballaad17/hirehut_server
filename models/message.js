@@ -15,7 +15,7 @@ const MessageSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  converstion: {
+  conversation: {
     type: Schema.Types.ObjectId,
     ref: "Conversation",
   },

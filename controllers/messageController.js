@@ -31,7 +31,7 @@ async function createMessage(sender, message, conversationId) {
   try {
     const newmessage = new Message({
       sender,
-      converstion: conversationId,
+      conversation: conversationId,
       content: message,
     });
 
@@ -87,7 +87,7 @@ module.exports.getMessagesOfConversation = async (req, res) => {
 
   try {
     const messages = await Message.find({
-      converstion: conversationId,
+      conversation: conversationId,
     });
 
     if (!messages.length) {
